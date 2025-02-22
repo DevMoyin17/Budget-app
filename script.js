@@ -4,6 +4,7 @@ let budget = 0;
 let operation=0;
 let newIndex;
  let operationEdit=0;
+ 
 
 const firstButton = () =>{
   const Mybudget = document.getElementById('totalbudget').value
@@ -31,20 +32,23 @@ const secondButton = () => {
           amount: Amount.value,
           quantity: Quantity.value,
       }
-      if (budget > 0 && bal > 0) {
-          if ((bud.amount * bud.quantity) <= bal) {
-              budgetItems.push(bud)
-              bal = bal - (bud.amount * bud.quantity)
-      Mybalance.innerHTML ='<span class ="fw-bold"> Total Balance:</span>' + bal
-      showItems()
-              operation = bud.amount * bud.quantity
-          } else {
-              alert("Insufficient funds")
-          }
+        if (budget > 0 && bal > 0) {
+            if ((bud.amount * bud.quantity) <= bal) {
+                budgetItems.push(bud)
+                bal = bal - (bud.amount * bud.quantity)
+                Items.value = '';
+                Amount.value = '';
+                Quantity.value = '';
+                 Mybalance.innerHTML ='<span class ="fw-bold"> Total Balance:</span>' + bal
+                showItems()
+                operation = bud.amount * bud.quantity
+            } else {
+                alert("Insufficient funds")
+            }
 
-      } else {
-          alert("put a budget first")
-      }
+        } else {
+            alert("put a budget first")
+        }
   }
 }
 
@@ -53,7 +57,7 @@ const deleteItem = (i) =>{
     if(confirmation == true){
       budgetItems.splice(i,1)
       showItems()
-      bal = bal+operation
+      bal = budget - budgetItems.reduce((sum, item) => sum + (item.amount * item.quantity), 0);
       Mybalance.innerHTML ='<span class ="fw-bold"> Total Balance:</span>' + bal
     }
   }
@@ -62,23 +66,23 @@ const deleteItem = (i) =>{
   }
   const editValues = () =>{
     let bud = {
-      name: newItems.value,
-      amount: newAmount.value,
-      quantity: newQuantity.value,
-  }
-  budgetItems.splice(newIndex,1,bud)
+      name: document.getElementById('newItems').value,   
+      amount: Number(document.getElementById('newAmount').value),  
+      quantity: Number(document.getElementById('newQuantity').value), 
+  };
+    budgetItems[newIndex] = bud;
+
+    bal = budget - budgetItems.reduce((sum, item) => sum + (item.amount * item.quantity), 0);
+
   showItems()
-  operationEdit= bud.amount * bud.quantity
-  bal=0
-  bal= budget - operationEdit
-  Mybalance.innerHTML ='<span class ="fw-bold"> Total Balance:</span>' + bal
+  Mybalance.innerHTML = '<span class="fw-bold"> Total Balance:</span>' + bal;
 
   }
 const showItems = () => {
     showAll.innerHTML = "";
         budgetItems.map((item,index)=>{
           showAll.innerHTML += 
-          `<div className="row">
+          `<div class="row">
           <div class='col mx-2'>
               <div class="card p-1 mx-auto mt-5">
               <div class='fs-2 fw-bold'>${index+1}. ${item.name}</div>
